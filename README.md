@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Mariocj89/sealedmock.svg?branch=master)](https://travis-ci.org/Mariocj89/sealedmock)
 # Sealed Mock
 Small utility to ease the process of defining and working with mocks.
 
