@@ -3,6 +3,7 @@ the methods that can be called
 
 """
 import mock
+import functools
 
 
 class SealedMockAttributeAccess(AttributeError):
@@ -35,3 +36,7 @@ class SealedMock(mock.Mock):
             else:
                 if isinstance(m, SealedMock):
                     m.sealed = value
+
+
+patch = functools.partial(mock.patch, new_callable=SealedMock)
+
