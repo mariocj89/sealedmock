@@ -1,11 +1,11 @@
 """Sample code for the integration test"""
-import urllib2
+import os
 
 
 class SampleCodeClass(object):
     """This is sample code"""
-    def calling_urlopen(self):
-        return urllib2.urlopen("http://chooserandom.com")
+    def calling_rm(self):
+        return os.rm("/secret_path")
 
-    def calling_splithost(self):
-        return urllib2.splithost("//host:port/path")
+    def calling_pardir(self):
+        return os.pardir
