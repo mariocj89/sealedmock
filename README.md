@@ -1,0 +1,7 @@
+# Sealed Mock
+
+# Install
+
+# Usage
+```
+```
