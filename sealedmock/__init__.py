@@ -4,9 +4,7 @@ the methods that can be called
 """
 import mock
 import functools
-
-
-__version__ = "0.2.0"
+from ._version import __version__
 
 
 def _extract_mock_name(in_mock):
