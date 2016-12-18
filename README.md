@@ -39,6 +39,7 @@ class SampleCodeClass(object):
 
 You can write a test like:
 ```python
+from sealedmock import patch
 @patch("tests.sample_code.urllib2")
 def test_using_decorator(mock):
         sample = sample_code.SampleCodeClass()
@@ -55,7 +56,7 @@ def test_using_decorator(mock):
 
 If you use an common Mock the second part will pass as it will create a
 mock for you and return it. With SealedMock you can choose when to stop
-that beaviour.
+that behaviour.
 
 This is recursive so you can write:
 ```python
@@ -63,6 +64,7 @@ This is recursive so you can write:
 def test_recursive(mock):
         sample = sample_code.SampleCodeClass()
         mock.secret.call1.call2.call3.return_value = 1
+        mock.sealed = True  # No new attributes can be declared
 
         # If secret is not used as specified above it will fail
         # ex: if do_stuff also calls secret.call1.call9
