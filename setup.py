@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from setuptools import setup
+import sealedmock
 LONG_DESCRIPTION="Mocks that can be restricted to the specified interface"
+
 
 try:
     # attempt to build a long description from README.md
@@ -14,7 +16,7 @@ except (ImportError, RuntimeError, OSError):
 setup(
     name='sealedmock',
     packages=['sealedmock'],
-    version='0.1.0',
+    version=sealedmock.__version__,
     description='Mocks that whitelist its interface',
     long_description=LONG_DESCRIPTION,
     author='Mario Corchero',

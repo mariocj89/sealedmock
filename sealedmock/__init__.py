@@ -6,6 +6,9 @@ import mock
 import functools
 
 
+__version__ = "0.2.0"
+
+
 def _extract_mock_name(in_mock):
     """Prints the mock access path
 
