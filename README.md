@@ -6,6 +6,18 @@ mock objects.
 SealedMock allows specify when you are done defining the mock, ensuring that
 any unexpected call to the mock is cached.
 
+Sample:
+```python
+import sealedmock
+m = sealedmock.SealedMock()
+m.method1.return_value.attr1.method2.return_value = 1
+m.sealed = True
+m.method1().attr1.method2()
+# 1
+m.method1().attr2
+# Exception: SealedMockAttributeAccess: mock.method1().attr2
+```
+
 
 # Install
 ```pip install sealedmock```

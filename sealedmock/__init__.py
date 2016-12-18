@@ -51,6 +51,24 @@ class SealedMockAttributeAccess(AttributeError):
 
 
 class SealedMock(mock.Mock):
+    """A Mock that can be sealed at any point of time
+
+    Once the mock is sealed it prevents any implicit mock creation
+
+    To seal the mock call seled_mock.sealed = True
+
+    :Example:
+
+    >>> import sealedmock
+    >>> m = sealedmock.SealedMock()
+    >>> m.method1.return_value.attr1.method2.return_value = 1
+    >>> m.sealed = True
+    >>> m.method1().attr1.method2()
+    >>> # 1
+    >>> m.method1().attr2
+    >>> # Exception: SealedMockAttributeAccess: mock.method1().attr2
+
+    """
     def __init__(self, *args, **kwargs):
         super(SealedMock, self).__init__(*args, **kwargs)
         self.__dict__["_sealed"] = False
@@ -65,6 +83,12 @@ class SealedMock(mock.Mock):
 
     @property
     def sealed(self):
+        """Attribute that marks whether the mock can be extended dynamically
+
+        Once sealed is set to True no attribute that was not defined before can
+        be accessed.
+        :raises: SealedMockAttributeAccess
+        """
         return self._sealed
 
     @sealed.setter
