@@ -6,6 +6,46 @@ import mock
 import functools
 
 
+def _extract_mock_name(in_mock):
+    """Prints the mock access path
+
+    Code from __repr__ code in mock.py
+
+    Given a mock prints the whole access chain since the root mock
+    """
+    _name_list = [in_mock._mock_new_name]
+    _parent = in_mock._mock_new_parent
+    last = in_mock
+
+    dot = '.'
+    if _name_list == ['()']:
+        dot = ''
+    seen = set()
+    while _parent is not None:
+        last = _parent
+
+        _name_list.append(_parent._mock_new_name + dot)
+        dot = '.'
+        if _parent._mock_new_name == '()':
+            dot = ''
+
+        _parent = _parent._mock_new_parent
+
+        # use ids here so as not to call __hash__ on the mocks
+        if id(_parent) in seen:
+            break
+        seen.add(id(_parent))
+
+    _name_list = list(reversed(_name_list))
+    _first = last._mock_name or 'mock'
+    if len(_name_list) > 1:
+        if _name_list[1] not in ('()', '().'):
+            _first += '.'
+    _name_list[0] = _first
+    return ''.join(_name_list)
+
+
+
 class SealedMockAttributeAccess(AttributeError):
     """Attempted to access an attribute of a sealed mock"""
 
@@ -17,7 +57,9 @@ class SealedMock(mock.Mock):
 
     def _get_child_mock(self, **kw):
         if self.sealed:
-            raise SealedMockAttributeAccess(kw.get("name", "__call__"))
+            attribute = "." + kw["name"] if "name" in kw else "()"
+            mock_name = _extract_mock_name(self) + attribute
+            raise SealedMockAttributeAccess(mock_name)
         else:
             return SealedMock(**kw)
 

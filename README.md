@@ -4,7 +4,8 @@ Whitelist the attributes/methods of your mocks instead of just letting it create
 mock objects.
 
 SealedMock allows specify when you are done defining the mock, ensuring that
-any unexpected call to the mock is catched.
+any unexpected call to the mock is cached.
+
 
 # Install
 ```pip install sealedmock```
