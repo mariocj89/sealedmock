@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/Mariocj89/sealedmock.svg?branch=master)](https://travis-ci.org/Mariocj89/sealedmock)
+[![PyPI Version](https://img.shields.io/pypi/v/sealedmock.svg)](https://pypi.python.org/pypi/sealedmock/)
+
 # Sealed Mock
 Whitelist the attributes/methods of your mocks instead of just letting it create new
 mock objects.
