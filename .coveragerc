@@ -1,0 +1,4 @@
+[paths]
+source = sealedmock
+[report]
+show_missing = True

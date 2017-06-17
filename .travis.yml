@@ -3,5 +3,10 @@ language: python
 python:
     - "2.7"
     - "3.6"
-install: pip install tox-travis
-script: tox
+install:
+    - pip install -rrequirements.txt
+    - pip install coveralls
+script:
+    py.test --cov=sealedmock -vvvv tests
+after_success:
+  coveralls
