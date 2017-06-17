@@ -1,8 +1,5 @@
-"""Mock class that allows to whitelist
-the methods that can be called
-
-"""
-import mock
+"""Mock class that allows to whitelist the methods that can be called"""
+from mock import *
 import functools
 from ._version import __version__
 
@@ -51,7 +48,7 @@ class SealedMockAttributeAccess(AttributeError):
     """Attempted to access an attribute of a sealed mock"""
 
 
-class SealedMock(mock.Mock):
+class SealedMock(Mock):
     """A Mock that can be sealed at any point of time
 
     Once the mock is sealed it prevents any implicit mock creation
@@ -105,5 +102,5 @@ class SealedMock(mock.Mock):
                     m.sealed = value
 
 
-patch = functools.partial(mock.patch, new_callable=SealedMock)
+patch = functools.partial(patch, new_callable=SealedMock)
 
