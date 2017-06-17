@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Mariocj89/sealedmock.svg?branch=master)](https://travis-ci.org/Mariocj89/sealedmock)
+[![Build Status](https://travis-ci.org/mariocj89/sealedmock.svg?branch=master)](https://travis-ci.org/mariocj89/sealedmock)
 [![PyPI Version](https://img.shields.io/pypi/v/sealedmock.svg)](https://pypi.python.org/pypi/sealedmock/)
 
 # Sealed Mock

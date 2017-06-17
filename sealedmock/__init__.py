@@ -1,5 +1,8 @@
 """Mock class that allows to whitelist the methods that can be called"""
-from mock import *
+try:
+    from unittest.mock import *
+except ImportError:
+    from mock import *
 import functools
 from ._version import __version__
 
