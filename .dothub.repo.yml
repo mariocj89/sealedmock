@@ -1,0 +1,25 @@
+collaborators:
+  mariocj89:
+    permission: admin
+labels:
+  bug:
+    color: ee0701
+  enhancement:
+    color: 84b6eb
+  help wanted:
+    color: 128A0C
+  question:
+    color: cc317c
+  wontfix:
+    color: ffffff
+options:
+  allow_merge_commit: true
+  allow_rebase_merge: true
+  allow_squash_merge: true
+  description: Make your mocks behave
+  has_downloads: true
+  has_issues: true
+  has_wiki: true
+  homepage: null
+  name: sealedmock
+  private: false
