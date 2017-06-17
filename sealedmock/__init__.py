@@ -69,7 +69,7 @@ class SealedMock(Mock):
     """
     def __init__(self, *args, **kwargs):
         super(SealedMock, self).__init__(*args, **kwargs)
-        self.__dict__["_sealed"] = False
+        self.__dict__["_mock_sealed"] = False
 
     def _get_child_mock(self, **kw):
         if self.sealed:
@@ -87,11 +87,11 @@ class SealedMock(Mock):
         be accessed.
         :raises: SealedMockAttributeAccess
         """
-        return self._sealed
+        return self._mock_sealed
 
     @sealed.setter
     def sealed(self, value):
-        self._sealed = value
+        self._mock_sealed = value
         for attr in dir(self):
             try:
                 m = getattr(self, attr)
