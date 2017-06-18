@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/mariocj89/sealedmock.svg?branch=master)](https://travis-ci.org/mariocj89/sealedmock)
 [![Coverage Status](https://coveralls.io/repos/github/mariocj89/sealedmock/badge.svg?branch=master)](https://coveralls.io/github/mariocj89/sealedmock?branch=master)
+[![Code Health](https://landscape.io/github/mariocj89/sealedmock/master/landscape.svg?style=flat)](https://landscape.io/github/mariocj89/sealedmock/master)
 [![PyPI Version](https://img.shields.io/pypi/v/sealedmock.svg)](https://pypi.python.org/pypi/sealedmock/)
 
 # Sealed Mock
