@@ -6,21 +6,24 @@ Sealed Mock
 Whitelist the attributes/methods of your mocks instead of just letting
 it create new mock objects.
 
-SealedMock allows specify when you are done defining the mock, ensuring
+`sealedmock` allows to specify when you are done defining the mock, ensuring
 that any unexpected call to the mock is cached.
 
 Sample:
 
 .. code:: python
 
-    import sealedmock
-    m = sealedmock.SealedMock()
+    from unittest.mock import Mock
+    from sealedmock import seal
+    m = Mock()
     m.method1.return_value.attr1.method2.return_value = 1
-    m.sealed = True
+    seal(m)  # No new attributes can be declared
     m.method1().attr1.method2()
     # 1
     m.method1().attr2
-    # Exception: SealedMockAttributeAccess: mock.method1().attr2
+    # Exception: AttributeError mock.method1().attr2
+
+Big news! This is getting into Python3.7! See [this PR](https://github.com/python/cpython/pull/1923/files).
 
 Install
 =======
@@ -48,22 +51,23 @@ You can write a test like:
 
 .. code:: python
 
-    from sealedmock import patch
+    from unittest.mock import patch
+    from sealedmock import seal
     @patch("tests.sample_code.urllib2")
     def test_using_decorator(mock):
             sample = sample_code.SampleCodeClass()
             mock.urlopen.return_value = 2
 
-            mock.sealed = True  # No new attributes can be declared
+            seal(mock)  # No new attributes can be declared
 
             # calling urlopen succeeds as mock.urlopen has been defined
-            assert sample.calling_urlopen()
+            sample.calling_urlopen()
 
             # This will fail as mock.splithost has not been defined
             sample.calling_splithost()
 
 If you use an common Mock the second part will pass as it will create a
-mock for you and return it. With SealedMock you can choose when to stop
+mock for you and return it. With sealedmock you can choose when to stop
 that behaviour.
 
 This is recursive so you can write:
@@ -74,7 +78,7 @@ This is recursive so you can write:
     def test_recursive(mock):
             sample = sample_code.SampleCodeClass()
             mock.secret.call1.call2.call3.return_value = 1
-            mock.sealed = True  # No new attributes can be declared
+            seal(mock)  # No new attributes can be declared
 
             # If secret is not used as specified above it will fail
             # ex: if do_stuff also calls secret.call1.call9
@@ -90,10 +94,10 @@ It also prevents typos on tests if used like this:
 
             sample.do_stuff()
 
-            mock.sealed = True
+            seal(mock)
             mock.asert_called_with(1)
             # Note the typo in asert (should be assert)
-            # Sealed mock will rise, normal mock won't
+            # A sealed mock will rise, normal mock won't
 
 .. |Build Status| image:: https://travis-ci.org/mariocj89/sealedmock.svg?branch=master
    :target: https://travis-ci.org/mariocj89/sealedmock

@@ -2,14 +2,14 @@
 import pytest
 
 from tests import sample_code
-from sealedmock import patch
+from sealedmock import seal, patch
 
 
 def test_using_context_manager():
     with patch("tests.sample_code.os") as mock:
         sample = sample_code.SampleCodeClass()
         mock.rm.return_value = 2
-        mock.sealed = True
+        seal(mock)
 
         assert sample.calling_rm() == 2
         with pytest.raises(AttributeError):
@@ -20,7 +20,7 @@ def test_using_context_manager():
 def test_using_decorator(mock):
     sample = sample_code.SampleCodeClass()
     mock.rm.return_value = 2
-    mock.sealed = True
+    seal(mock)
 
     assert sample.calling_rm() == 2
     with pytest.raises(AttributeError):

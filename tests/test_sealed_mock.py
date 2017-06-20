@@ -1,26 +1,30 @@
-from sealedmock import SealedMock
+from sealedmock import Mock, seal
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 import pytest
 
 
 def test_new_attributes_can_be_accessed_before_seal():
-    m = SealedMock()
+    m = Mock()
     m.test
     m.test()
     m.test().test2
 
 
 def test_attributes_return_more_mocks_by_default():
-    m = SealedMock()
+    m = Mock()
 
-    assert isinstance(m.test, SealedMock)
-    assert isinstance(m.test(), SealedMock)
-    assert isinstance(m.test().test2(), SealedMock)
+    assert isinstance(m.test, Mock)
+    assert isinstance(m.test(), Mock)
+    assert isinstance(m.test().test2(), Mock)
 
 
 def test_new_attributes_cannot_be_accessed_on_seal():
-    m = SealedMock()
+    m = Mock()
 
-    m.sealed = True
+    seal(m)
     with pytest.raises(AttributeError):
         m.test
     with pytest.raises(AttributeError):
@@ -28,42 +32,42 @@ def test_new_attributes_cannot_be_accessed_on_seal():
 
 
 def test_existing_attributes_allowed_after_seal():
-    m = SealedMock()
+    m = Mock()
 
     m.test.return_value = 3
 
-    m.sealed = True
+    seal(m)
     assert m.test() == 3
 
 
 def test_initialized_attributes_allowed_after_seal():
-    m = SealedMock(test_value=1)
+    m = Mock(test_value=1)
 
-    m.sealed = True
+    seal(m)
     assert m.test_value == 1
 
 
 def test_call_on_sealed_mock_fails():
-    m = SealedMock()
+    m = Mock()
 
-    m.sealed = True
+    seal(m)
     with pytest.raises(AttributeError):
         m()
 
 
 def test_call_on_defined_sealed_mock_succeeds():
-    m = SealedMock(return_value=5)
+    m = Mock(return_value=5)
 
-    m.sealed = True
+    seal(m)
     assert m() == 5
 
 
 def test_seals_recurse_on_added_attributes():
-    m = SealedMock()
+    m = Mock()
 
     m.test1.test2().test3 = 4
 
-    m.sealed = True
+    seal(m)
     assert m.test1.test2().test3 == 4
     with pytest.raises(AttributeError):
         m.test1.test2.test4
@@ -83,12 +87,12 @@ class SampleObject(object):
 
 def test_integration_with_spec_att_definition():
     """You are not restricted when defining attributes on a mock with spec"""
-    m = SealedMock(SampleObject)
+    m = Mock(SampleObject)
 
     m.attr_sample1 = 1
     m.attr_sample3 = 3
 
-    m.sealed = True
+    seal(m)
     assert m.attr_sample1 == 1
     assert m.attr_sample3 == 3
     with pytest.raises(AttributeError):
@@ -97,11 +101,11 @@ def test_integration_with_spec_att_definition():
 
 def test_integration_with_spec_method_definition():
     """You need to defin the methods, even if they are in the spec"""
-    m = SealedMock(SampleObject)
+    m = Mock(SampleObject)
 
     m.method_sample1.return_value = 1
 
-    m.sealed = True
+    seal(m)
     assert m.method_sample1() == 1
     with pytest.raises(AttributeError):
         m.method_sample2()
@@ -109,16 +113,16 @@ def test_integration_with_spec_method_definition():
 
 def test_integration_with_spec_method_definition_respects_spec():
     """You cannot define methods out of the spec"""
-    m = SealedMock(SampleObject)
+    m = Mock(SampleObject)
 
     with pytest.raises(AttributeError):
         m.method_sample3.return_value = 3
 
 
 def test_sealed_exception_has_attribute_name():
-    m = SealedMock()
+    m = Mock()
 
-    m.sealed = True
+    seal(m)
     try:
         m.SECRETE_name
     except AttributeError as ex:
@@ -126,10 +130,10 @@ def test_sealed_exception_has_attribute_name():
 
 
 def test_attribute_chain_is_maintained():
-    m = SealedMock(name="mock_name")
+    m = Mock(name="mock_name")
     m.test1.test2.test3.test4
 
-    m.sealed = True
+    seal(m)
     try:
         m.test1.test2.test3.test4.boom
     except AttributeError as ex:
@@ -137,10 +141,10 @@ def test_attribute_chain_is_maintained():
 
 
 def test_call_chain_is_maintained():
-    m = SealedMock()
+    m = Mock()
     m.test1().test2.test3().test4
 
-    m.sealed = True
+    seal(m)
     try:
         m.test1().test2.test3().test4()
     except AttributeError as ex:

@@ -46,64 +46,44 @@ def _extract_mock_name(in_mock):
     return ''.join(_name_list)
 
 
+def _get_child_mock(mock, **kw):
+    """Shared code betwee the SealedMock and the ones automagically defined in "seal" """
+    if mock._mock_sealed:
+        attribute = "." + kw["name"] if "name" in kw else "()"
+        mock_name = _extract_mock_name(mock) + attribute
+        raise AttributeError(mock_name)
+    else:
+        return mock.__class__(**kw)
 
-class SealedMockAttributeAccess(AttributeError):
-    """Attempted to access an attribute of a sealed mock"""
 
+def _frankeinstainize(mock):
+    """Given a mock dirty patches it to behave like a sealed mock
 
-class SealedMock(Mock):
-    """A Mock that can be sealed at any point of time
-
-    Once the mock is sealed it prevents any implicit mock creation
-
-    To seal the mock call seled_mock.sealed = True
-
-    :Example:
-
-    >>> import sealedmock
-    >>> m = sealedmock.SealedMock()
-    >>> m.method1.return_value.attr1.method2.return_value = 1
-    >>> m.sealed = True
-    >>> m.method1().attr1.method2()
-    >>> # 1
-    >>> m.method1().attr2
-    >>> # Exception: SealedMockAttributeAccess: mock.method1().attr2
-
+    I know... give me a better way to do this.
     """
-    def __init__(self, *args, **kwargs):
-        super(SealedMock, self).__init__(*args, **kwargs)
-        self.__dict__["_mock_sealed"] = False
-
-    def _get_child_mock(self, **kw):
-        if self.sealed:
-            attribute = "." + kw["name"] if "name" in kw else "()"
-            mock_name = _extract_mock_name(self) + attribute
-            raise SealedMockAttributeAccess(mock_name)
-        else:
-            return SealedMock(**kw)
-
-    @property
-    def sealed(self):
-        """Attribute that marks whether the mock can be extended dynamically
-
-        Once sealed is set to True no attribute that was not defined before can
-        be accessed.
-        :raises: SealedMockAttributeAccess
-        """
-        return self._mock_sealed
-
-    @sealed.setter
-    def sealed(self, value):
-        self._mock_sealed = value
-        for attr in dir(self):
-            try:
-                m = getattr(self, attr)
-            except AttributeError:
-                pass
-            else:
-                if isinstance(m, SealedMock):
-                    m.sealed = value
+    mock._mock_sealed = True
+    mock._get_child_mock = functools.partial(_get_child_mock, mock)
 
 
-patch = functools.partial(patch, new_callable=SealedMock)
+def seal(mock):
+    """Disable the automatic generation of "submocks"
+
+    Given an input Mock, seals it to ensure no further mocks will be generated
+    when accessing an attribute that was not already defined.
+
+    Submocks are defined as all mocks which were created DIRECTLY from the
+    parent. If a mock is assigned to an attribute of an existing mock,
+    it is not considered a submock.
+    """
+    _frankeinstainize(mock)
+    for attr in dir(mock):
+        try:
+            m = getattr(mock, attr)
+        except AttributeError:
+            continue
+        if not isinstance(m, NonCallableMock):
+            continue
+        if m._mock_new_parent is mock:
+            seal(m)
+
 
