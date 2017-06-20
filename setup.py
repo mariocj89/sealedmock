@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 from setuptools import setup
-LONG_DESCRIPTION="Mocks that can be restricted to the specified interface"
 
 exec(open('sealedmock/_version.py').read())
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
 
-try:
-    # attempt to build a long description from README.md
-    # run sudo apt-get install pandoc and pip install pypandoc first
-    import pypandoc
-    LONG_DESCRIPTION=pypandoc.convert('README.md', 'rst')
-except (ImportError, RuntimeError, OSError):
-    pass
+import sys
+
+if sys.version_info >= (3,0):
+    install_requires = []
+else:
+    install_requires = ['mock']
 
 
 setup(
@@ -19,14 +20,14 @@ setup(
     packages=['sealedmock'],
     version=__version__,
     description='Mocks that whitelist its interface',
-    long_description=LONG_DESCRIPTION,
+    long_description=readme(),
     author='Mario Corchero',
     author_email='mariocj89@gmail.com',
     url='https://github.com/Mariocj89/sealedmock',
     keywords=['mock', 'testing', 'unittest', 'integration', 'whitelist'],
     license='MIT',
     use_2to3=True,
-    install_requires=['mock'],
+    install_requires=install_requires,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
