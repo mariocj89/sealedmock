@@ -23,7 +23,7 @@ Sample:
     m.method1().attr2
     # Exception: AttributeError mock.method1().attr2
 
-Big news! This is getting into Python3.7! See `this PR <(https://github.com/python/cpython/pull/1923/files)>`_.
+Sealedmock is making it into  `Python3.7 <https://github.com/python/cpython/pull/1923/>`_, but you can still use this module if you are not lucky enough to be working in Python3.7. This works even in Python2.
 
 Install
 =======
