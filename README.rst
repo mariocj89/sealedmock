@@ -23,7 +23,7 @@ Sample:
     m.method1().attr2
     # Exception: AttributeError mock.method1().attr2
 
-Big news! This is getting into Python3.7! See [this PR](https://github.com/python/cpython/pull/1923/files).
+Big news! This is getting into Python3.7! See `this PR <(https://github.com/python/cpython/pull/1923/files)>`_.
 
 Install
 =======

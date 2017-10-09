@@ -47,13 +47,10 @@ def _extract_mock_name(in_mock):
 
 
 def _get_child_mock(mock, **kw):
-    """Shared code betwee the SealedMock and the ones automagically defined in "seal" """
-    if mock._mock_sealed:
-        attribute = "." + kw["name"] if "name" in kw else "()"
-        mock_name = _extract_mock_name(mock) + attribute
-        raise AttributeError(mock_name)
-    else:
-        return mock.__class__(**kw)
+    """Intercepts call to generate new mocks and raises instead"""
+    attribute = "." + kw["name"] if "name" in kw else "()"
+    mock_name = _extract_mock_name(mock) + attribute
+    raise AttributeError(mock_name)
 
 
 def _frankeinstainize(mock):
@@ -61,7 +58,6 @@ def _frankeinstainize(mock):
 
     I know... give me a better way to do this.
     """
-    mock._mock_sealed = True
     mock._get_child_mock = functools.partial(_get_child_mock, mock)
 
 
